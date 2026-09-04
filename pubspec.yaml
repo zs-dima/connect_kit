@@ -1,0 +1,53 @@
+name: connect_kit
+description: >
+  A Connect RPC runtime for Dart: a transport factory with pinned roots and keep-alive, an
+  interceptor chain with retry, metadata and compression middlewares, and the protobuf well-known
+  types.
+
+# Until core_model is on pub.dev this package is consumed by git tag; pub.dev rejects git
+# dependencies.
+publish_to: none
+
+version: 0.1.0
+
+homepage: https://github.com/zs-dima/connect_kit
+repository: https://github.com/zs-dima/connect_kit
+issue_tracker: https://github.com/zs-dima/connect_kit/issues
+
+topics:
+  - connectrpc
+  - grpc
+  - protobuf
+  - rpc
+  - transport
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  core_model:
+    git:
+      url: https://github.com/zs-dima/core_model.git
+      ref: v0.1.0
+  connectrpc: ^2.0.0
+  protobuf: ^6.0.0
+  async: ^2.13.0
+  collection: ^1.19.0
+  fixnum: ^1.1.0
+  meta: ^1.16.0
+
+dev_dependencies:
+  test: ^1.25.0
+
+  lints_tool:
+    git:
+      url: https://github.com/zs-dima/lints_tool.git
+      ref: v1.0.1

@@ -13,48 +13,68 @@ extension GuidNullX on Guid? {
 
 /// Seconds, the only field the wire `Duration` carries here.
 extension DurationRpcX on rpc.Duration {
+  /// The Dart duration behind the wire message.
   Duration toDuration() => .new(seconds: seconds.toInt());
 }
 
+/// A Dart [Duration] as the wire message, whole seconds only.
 extension DurationRpc1X on Duration {
+  /// The wire message for this duration.
   rpc.Duration toDuration() => rpc.Duration()..seconds = fn.Int64(inSeconds);
 }
 
+/// A wrapper message as a nullable Dart value: unset on the wire reads as null.
 extension DoubleValueX on rpc.DoubleValue {
+  /// The value, or null when the message carries none.
   double? toDouble() => hasValue() ? value : null;
 }
 
+/// A nullable Dart value as its wrapper message: null becomes the unset default.
 extension RpcDoubleX on double? {
+  /// The wire message for this value.
   rpc.DoubleValue toDoubleValue() =>
       this == null ? rpc.DoubleValue.getDefault() : (rpc.DoubleValue()..setField(1, this!));
 }
 
+/// A wrapper message as a nullable Dart value: unset on the wire reads as null.
 extension BoolValueX on rpc.BoolValue {
+  /// The value, or null when the message carries none.
   bool? toBool() => hasValue() ? value : null;
 }
 
+/// A nullable Dart value as its wrapper message: null becomes the unset default.
 extension RpcBoolX on bool? {
+  /// The wire message for this value.
   rpc.BoolValue toBoolValue() => this == null ? rpc.BoolValue.getDefault() : (rpc.BoolValue()..setField(1, this!));
 }
 
+/// Nullable bytes as their wrapper message: null becomes the unset default.
 extension RpcBytesX on Uint8List? {
+  /// The wire message for these bytes.
   rpc.BytesValue toBytesValue() => this == null ? rpc.BytesValue.getDefault() : (rpc.BytesValue()..setField(1, this!));
 }
 
+/// A wrapper message as nullable bytes: unset on the wire reads as null.
 extension BytesValueX on rpc.BytesValue {
+  /// The bytes, or null when the message carries none.
   Uint8List? toBytes() => hasValue() ? .fromList(value) : null;
 }
 
+/// A wrapper message as a nullable Dart value: unset on the wire reads as null.
 extension Int32ValueX on rpc.Int32Value {
+  /// The value, or null when the message carries none.
   int? toInt() => hasValue() ? value : null;
 }
 
+/// A nullable Dart value as its wrapper message: null becomes the unset default.
 extension RpcIntX on int? {
+  /// The wire message for this value.
   rpc.Int32Value toIntValue() => this == null ? rpc.Int32Value.getDefault() : (rpc.Int32Value()..setField(1, this!));
 }
 
 /// Maps an RPC failure to a message for the user.
 extension ConnectExceptionX on ConnectException {
+  /// A sentence for the user, [caption] first, chosen by the failure's code.
   String detail(String caption) {
     for (final detail in details) {
       // Typed google.rpc details arrive as raw `Any` payloads, type and bytes; connectrpc exposes

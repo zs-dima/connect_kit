@@ -141,7 +141,10 @@ abstract class ConnectMiddleware {
           cancelOnError: true,
         );
         sub = subscription;
-        // Back-pressure: the consumer's pause and resume reach HTTP/2 flow control.
+        // Back-pressure, as far as this layer can carry it: the consumer's pause and resume reach
+        // the wire subscription. Whether that reaches HTTP/2 flow control is the transport's
+        // business — upstream connectrpc pumps frames into a StreamController without consulting
+        // the consumer, so today it buffers instead (see the package README).
         controller
           ..onPause = subscription.pause
           ..onResume = subscription.resume;

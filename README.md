@@ -5,8 +5,8 @@
 
 A Connect RPC runtime for Dart, built on `package:connectrpc`. It supplies the transport factory
 with pinned TLS roots and keep-alive settings, a middleware contract that covers unary and streaming
-calls with back-pressure, retry and metadata middlewares, conversions between Dart values and wire
-types, and the protobuf well-known types.
+calls, retry and metadata middlewares, conversions between Dart values and wire types, and the
+protobuf well-known types.
 
 ## Features
 
@@ -14,7 +14,7 @@ types, and the protobuf well-known types.
   `SecurityContext` for `https`; on web the browser's fetch stack.
 - `ConnectMiddleware`: one handler wraps the whole call, so a middleware observes every message of a
   stream and any mid-stream error. Cancelling the response aborts the call through a child signal,
-  and a consumer's pause reaches HTTP/2 flow control.
+  and a consumer's pause is forwarded to the wire subscription — see the caveat below.
 - `ConnectRetryMiddleware`: transient unary calls with full-jitter backoff, server pushback
   (`grpc-retry-pushback-ms`) and a total time budget.
 - `ConnectMetadataMiddleware`: a fixed set of metadata entries on every call.
@@ -88,6 +88,18 @@ passes its own roots.
 Compression is a transport option rather than a middleware: `acceptCompressions` defaults to gzip
 response decoding on the VM and nothing on web, and `sendCompression` is off unless a deployment
 turns it on.
+
+### Back-pressure, and where it stops
+
+`ConnectMiddleware` forwards a consumer's `pause` and `resume` to the subscription underneath it,
+and a test pins that. It does NOT follow through to the wire: `connectrpc` 1.0.0 and 2.0.0 pump
+HTTP/2 frames into a `StreamController` in a loop that never consults the consumer
+(`lib/src/http2/http2.dart`), so a paused consumer buffers rather than withholding WINDOW_UPDATE.
+A slow reader of a large server stream therefore grows memory instead of slowing the sender.
+
+It matters for a stream consumed slower than it arrives; it does not for one read into a list. The
+fix is a demand gate in the transport, small and local, and it belongs upstream — the patch and a
+reproduction are written up in the consuming app's `docs/connectrpc-backpressure-issue.md`.
 
 ## Generated code
 

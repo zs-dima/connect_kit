@@ -1,5 +1,3 @@
-library connect_kit;
-
 // Types that appear in this package's own API; re-exported so a consumer needs no direct
 // core_model import.
 export 'package:core_model/core_model.dart' show Guid, GuidX, RetryBackoff, RetryNotifier;

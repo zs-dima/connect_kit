@@ -26,10 +26,10 @@ platforms:
   windows:
 
 environment:
-  sdk: ^3.13.2
+  sdk: ^3.13.4
 
 dependencies:
-  core_model: ^0.1.0
+  core_model: ^0.1.1
   connectrpc: ^2.0.0
   protobuf: ^6.0.0
   async: ^2.13.0
@@ -40,4 +40,4 @@ dependencies:
 dev_dependencies:
   test: ^1.25.0
 
-  lints_tool: ^1.0.1
+  lints_tool: ^1.1.1

@@ -1,5 +1,5 @@
 // The handler API is built on function typedefs, which the parameter-style lints below object to.
-// ignore_for_file: type_annotate_public_apis, avoid_dynamic, avoid-dynamic, prefer-explicit-parameter-names, use_function_type_syntax_for_parameters, prefer-async-callback, prefer-explicit-function-type
+// ignore_for_file: avoid_dynamic, avoid-dynamic, prefer-explicit-parameter-names, use_function_type_syntax_for_parameters, prefer-async-callback, prefer-explicit-function-type
 
 import 'dart:async';
 
@@ -101,7 +101,7 @@ abstract class ConnectMiddleware {
     controller.onCancel = () {
       cancelled = true;
       child.cancel();
-      sub?.cancel().ignore();
+      unawaited(sub?.cancel());
       // Consumer walked away: let a still-waiting handler finish quietly (a signal-abort error
       // usually wins the race and surfaces as `canceled` instead).
       final pending = done;

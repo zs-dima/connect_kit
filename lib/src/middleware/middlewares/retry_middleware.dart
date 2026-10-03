@@ -99,7 +99,7 @@ class ConnectRetryMiddleware {
     // and the loop can stop between attempts, a cancel during a backoff sleep included. An
     // in-flight attempt is aborted by the transport itself.
     var aborted = false;
-    req.signal.future.then((_) => aborted = true).ignore();
+    unawaited(req.signal.future.then((_) => aborted = true));
     var attempt = 0;
     final stopwatch = Stopwatch()..start();
     while (true) {

@@ -119,6 +119,7 @@ void main() {
       final transport = FakeTransportBuilder()
           .server(_kSpec, (req, context) async* {
             throw ConnectException(.unavailable, 'down');
+            // Unreachable by design: an `async*` body must contain a yield to be a generator.
             // ignore: dead_code
             yield 0;
           })
@@ -167,10 +168,12 @@ void main() {
           .server(_kSpec, (req, context) {
             // One value, then hang until aborted, like a live server stream.
             final controller = StreamController<int>()..add(1);
-            context.signal.future.then((_) {
-              if (!serverAborted.isCompleted) serverAborted.complete();
-              controller.close().ignore();
-            }).ignore();
+            unawaited(
+              context.signal.future.then((_) {
+                if (!serverAborted.isCompleted) serverAborted.complete();
+                unawaited(controller.close());
+              }),
+            );
             return controller.stream;
           })
           .build(interceptors: [_StreamRecorder(log).call]);
